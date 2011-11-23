@@ -5,6 +5,11 @@ A set of custom views used to navigate between the pages
 (or indicate the current position) of a ViewPager 
 from the [Android Support Package][1]
 
+Usage
+=====
+
+For an example how to use this library, check out the [example project][2]
+Or just download and install this [apk file][3]
 
 License
 =======
@@ -26,3 +31,5 @@ License
 
 
  [1]: http://developer.android.com/sdk/compatibility-library.html
+ [2]: https://github.com/downloads/astuetz/ViewPagerExtensions/ViewPagerExtensions-Example_1.zip
+ [3]: https://github.com/astuetz/ViewPagerExtensions/ViewPagerExtensions-Example_1.apk

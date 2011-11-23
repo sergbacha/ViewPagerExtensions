@@ -9,7 +9,7 @@ Usage
 =====
 
 For an example how to use this library, check out the [example project][2]
-Or just download and install this [apk file][3]
+or just download and install this [apk file][3]
 
 License
 =======

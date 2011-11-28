@@ -86,7 +86,7 @@ public class ScrollingTabsView extends HorizontalScrollView implements ViewPager
 	}
 	
 	/**
-	 * Sets the data behind this FixedTabsView.
+	 * Sets the data behind this ScrollingTabsView.
 	 * 
 	 * @param adapter
 	 *          The {@link TabsAdapter} which is responsible for maintaining the

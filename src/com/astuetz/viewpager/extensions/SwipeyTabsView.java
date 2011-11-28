@@ -22,13 +22,15 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.RelativeLayout;
 
 
-public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListener {
+public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListener, OnTouchListener {
 	
-	@SuppressWarnings("unused")
+  @SuppressWarnings("unused")
   private static final String TAG = "com.astuetz.viewpager.extensions";
 	
 	// Scrolling direction
@@ -76,6 +78,8 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 		setHorizontalFadingEdgeEnabled(true);
 		setFadingEdgeLength((int) (getResources().getDisplayMetrics().density * SHADOW_WIDTH));
 		setWillNotDraw(false);
+		
+		setOnTouchListener(this);
 	}
 	
 	@Override
@@ -157,6 +161,8 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 				mPager.setCurrentItem(index);
 			}
 		});
+		
+		tab.setOnTouchListener(this);
 	}
 	
 	/**
@@ -449,6 +455,12 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	}
 	
 	
+	private float mDragX = 0.0f; 
+	
+	
+	
+	
+	
 	/**
 	 * Helper class which holds different positions (and the width) for a tab
 	 * 
@@ -476,5 +488,29 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 			return sb.toString();
 		}
 	}
+
+
+
+	@Override
+  public boolean onTouch(View v, MotionEvent event) {
+		float x = event.getRawX();
+		
+		switch (event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:
+				mDragX = x;
+				mPager.beginFakeDrag();
+				break;
+			case MotionEvent.ACTION_MOVE:
+				mPager.fakeDragBy((mDragX - x) * (-1));
+				mDragX = x;
+				break;
+			case MotionEvent.ACTION_UP:
+				mPager.endFakeDrag();
+				break;
+		}
+		
+		return v.equals(this) ? true : super.onTouchEvent(event);
+  }
 	
 }

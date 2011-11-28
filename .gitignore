@@ -1,8 +1,3 @@
 #Android generated
 bin
 gen
-
-#Eclipse
-.project
-.classpath
-.settings

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Andreas Stütz <andreas.stuetz@gmail.com>
+ * Copyright (C) 2011 Andreas Stuetz <andreas.stuetz@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 		None, Left, Right
 	}
 	
+	private int mPosition;
+	
 	// This ArrayList stores the positions for each tab.
 	private ArrayList<TabPosition> mPositions = new ArrayList<TabPosition>();
 	
@@ -75,7 +77,7 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	public SwipeyTabsView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		
-		setHorizontalFadingEdgeEnabled(true);
+		setHorizontalFadingEdgeEnabled(false);
 		setFadingEdgeLength((int) (getResources().getDisplayMetrics().density * SHADOW_WIDTH));
 		setWillNotDraw(false);
 		
@@ -140,6 +142,8 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 		}
 		
 		mTabsCount = getChildCount();
+		
+		mPosition = mPager.getCurrentItem();
 	}
 	
 	/**
@@ -203,8 +207,9 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 			child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
 			
 			mPositions.get(i).width = child.getMeasuredWidth();
+			mPositions.get(i).height = child.getMeasuredHeight();
 			
-			maxTabHeight = Math.max(maxTabHeight, child.getMeasuredHeight());
+			maxTabHeight = Math.max(maxTabHeight, mPositions.get(i).height);
 		}
 		
 		setMeasuredDimension(resolveSize(0, widthMeasureSpec),
@@ -219,9 +224,12 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		
+		final int paddingTop = getPaddingTop();
+		
 		for (int i = 0; i < mTabsCount; i++) {
 			
 			final View tab = getChildAt(i);
+			TabPosition pos = mPositions.get(i);
 			
 			if (tab instanceof SwipeyTab) {
 				
@@ -233,8 +241,7 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 				
 			}
 			
-			tab.layout(mPositions.get(i).currentPos, getPaddingTop(),
-			    mPositions.get(i).currentPos + tab.getMeasuredWidth(), getPaddingTop() + tab.getMeasuredHeight());
+			tab.layout(pos.currentPos, paddingTop, pos.currentPos + pos.width, paddingTop + pos.height);
 			
 		}
 		
@@ -260,7 +267,7 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 		
 		if (mTabsCount == 0) return;
 		
-		final int currentItem = mPager.getCurrentItem();
+		final int currentItem = mPosition;
 		
 		for (int i = 0; i < mTabsCount; i++) {
 			
@@ -358,7 +365,7 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	 */
 	private void preventFromOverlapping() {
 		
-		final int currentItem = mPager.getCurrentItem();
+		final int currentItem = mPosition;
 		
 		TabPosition leftOutside = currentItem > 1 ? mPositions.get(currentItem - 2) : null;
 		TabPosition left = currentItem > 0 ? mPositions.get(currentItem - 1) : null;
@@ -414,9 +421,14 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	@Override
 	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 		
-		final int currentScrollX = mPager.getCurrentItem() * (mPager.getWidth() + mPager.getPageMargin());
-		
 		Direction dir = Direction.None;
+		
+		if (position != mPosition && positionOffset == 0.0f) {
+			mPosition = position;
+			calculateNewPositions(true);
+		}
+		
+		final int currentScrollX = mPosition * (mPager.getWidth() + mPager.getPageMargin());
 		
 		// Check if the user is swiping to the left or to the right
 		
@@ -443,6 +455,7 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 		}
 		
 		requestLayout();
+		
 	}
 	
 	
@@ -451,16 +464,11 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	 */
 	@Override
 	public void onPageSelected(int position) {
-		calculateNewPositions(false);
+		
 	}
 	
 	
-	private float mDragX = 0.0f; 
-	
-	
-	
-	
-	
+
 	/**
 	 * Helper class which holds different positions (and the width) for a tab
 	 * 
@@ -475,6 +483,7 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 		public int currentPos;
 		
 		public int width;
+		public int height;
 		
 		@Override
 		public String toString() {
@@ -490,6 +499,11 @@ public class SwipeyTabsView extends RelativeLayout implements OnPageChangeListen
 	}
 
 
+	
+	/**
+	 * still testing this...
+	 */
+	private float mDragX = 0.0f; 
 
 	@Override
   public boolean onTouch(View v, MotionEvent event) {

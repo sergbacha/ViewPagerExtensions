@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Andreas Stütz <andreas.stuetz@gmail.com>
+ * Copyright (C) 2011 Andreas Stuetz <andreas.stuetz@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,6 +150,8 @@ public class SwipeyTabButton extends Button implements SwipeyTab {
 		if (percent < 0) percent = 0;
 		if (percent > 100) percent = 100;
 		mCenterPercent = percent;
+		
+		invalidate();
 	}
 	
 }

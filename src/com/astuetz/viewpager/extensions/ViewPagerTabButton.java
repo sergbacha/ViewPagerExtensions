@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Andreas Stütz <andreas.stuetz@gmail.com>
+ * Copyright (C) 2011 Andreas Stuetz <andreas.stuetz@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class ViewPagerTabButton extends Button {
 		final int height = isSelected() ? mLineHeightSelected : mLineHeight;
 		
 		// draw the line
-		canvas.drawRect(0, getHeight() - height, getWidth(), getHeight(), linePaint);
+		canvas.drawRect(0, getMeasuredHeight() - height, getMeasuredWidth(), getMeasuredHeight(), linePaint);
 		
 	}
 	

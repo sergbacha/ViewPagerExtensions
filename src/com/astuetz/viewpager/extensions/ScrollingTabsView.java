@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Andreas Stütz <andreas.stuetz@gmail.com>
+ * Copyright (C) 2011 Andreas Stuetz <andreas.stuetz@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,8 @@ public class ScrollingTabsView extends HorizontalScrollView implements ViewPager
 	
 	private int mDividerColor = 0xFF636363;
 	private int mDividerMarginTop = 12;
-	private int mDividerMarginBottom = 21;
+	private int mDividerMarginBottom = 12;
+	private int mDividerWidth = 1;
 	
 	public ScrollingTabsView(Context context) {
 		this(context, null);
@@ -60,6 +61,10 @@ public class ScrollingTabsView extends HorizontalScrollView implements ViewPager
 		super(context, attrs);
 		
 		this.mContext = context;
+
+		mDividerMarginTop = (int) (getResources().getDisplayMetrics().density * mDividerMarginTop);
+		mDividerMarginBottom = (int) (getResources().getDisplayMetrics().density * mDividerMarginBottom);
+		mDividerWidth = (int) (getResources().getDisplayMetrics().density * mDividerWidth); 
 		
 		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ViewPagerExtensions, defStyle, 0);
 		
@@ -175,7 +180,7 @@ public class ScrollingTabsView extends HorizontalScrollView implements ViewPager
 	private View getSeparator() {
 		View v = new View(mContext);
 		
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(1, LayoutParams.FILL_PARENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mDividerWidth, LayoutParams.FILL_PARENT);
 		params.setMargins(0, mDividerMarginTop, 0, mDividerMarginBottom);
 		v.setLayoutParams(params);
 		
